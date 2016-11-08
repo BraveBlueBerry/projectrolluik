@@ -1,7 +1,8 @@
 from controllers.interface import interface
+from controllers.controlunit import controlunit
+from controllers.scanner import scanner
 from views.view import view
 from views.menu import menu
-
 
 class main:
     def __init__(self):
@@ -18,8 +19,13 @@ class main:
     def loop(self):
         while 1:
             try:
+                testsize = [self.interface.master.winfo_width(), self.interface.master.winfo_height()]
+                if testsize != self.size:
+                    self.size = testsize
+                    self.interface.updatesize(self.size[0],self.size[1])
+                    self.menu.draw()
+                    self.interface.frame.tkraise()
                 self.interface.update()
-                self.menu.draw()
             except:
                 print("Quitting")
                 quit()
@@ -27,4 +33,4 @@ class main:
         pass
 
 if __name__ == "__main__":
-    main()
+    m = main()

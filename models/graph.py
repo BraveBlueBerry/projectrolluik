@@ -1,4 +1,4 @@
-class graph(view):
+class graph:
     def __init__(self, controlunit):
         self.controlunit = controlunit
 

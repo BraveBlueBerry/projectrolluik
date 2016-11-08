@@ -8,11 +8,19 @@ class menu(view):
         self.arduinobuttons = []
         self.settings = menubutton("Settings", root, None, self)
         self.general = menubutton("General", root, None, self)
+        self.active = str(self.general)
         self.draw()
     def draw(self):
         w = math.floor(self.root.interface.width * 0.25)
         h = 30 if self.root.interface.height > 300 else self.root.interface.height * 0.10
-
+        if self.active == self.settings.id:
+            self.settings.configview.drawframe()
+        elif self.active == self.general.id:
+            self.general.configview.drawframe()
+        else:
+            for x in self.arduinobuttons:
+                if x.id == self.active:
+                    x.configview.drawframe()
         self.settings.place(y=(self.root.interface.height-h), x=0, width=w, height=h)
         self.general.place(y=0, x=0, width=w, height=h)
     def setcontrolunits(self, cudict):
@@ -31,7 +39,6 @@ class menu(view):
             self.settings.config(bg='#eee')
             self.general.config(bg='#fcc')
         # switch naar geklikt knopje
-        pass
     def setbuttonstate(self,id):
         # Is dit switch of ben ik een methode vergeten? :D
         pass
