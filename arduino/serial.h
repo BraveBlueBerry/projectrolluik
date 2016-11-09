@@ -2,13 +2,23 @@
 Dit bestand geeft de bodigde functies om seriele te versturen en ontvangen.
 Bronnen: humanHardDrive https://www.youtube.com/user/humanHardDrive, avr datasheet
 */
+/*
+WARNING: writeSerial is bugged en mogelijk appendSerial ook
+*/
+/*
+Hoe te gebruiken
+Allereerst om gebruik te maken hiervan moet initSerial(void) zijn aangeroepen.
+Verder moeten interrupts zijn enabled om te lezen.
+Gebruik getChar(void) om te kijken voor nieuw ontvangen karakters en om deze te krijgen.
+Voor het versturen van een byte moet sendImmediate(char) aangeroepen worden met de te verzenden byte.
+*/
 #define BUAD	9600
 #define BRC		((F_CPU/16/BUAD) - 1)
-#define RX_BUFFER_SIZE 40
-#define TX_BUFFER_SIZE 40
+#define RX_BUFFER_SIZE 128
+#define TX_BUFFER_SIZE 128
 
-uint8_t rxBuffer[RX_BUFFER_SIZE];//Ontvangen verichten worden hier in ondergebracht
-uint8_t txBuffer[TX_BUFFER_SIZE];//opslag voor te verzenden berichten
+char rxBuffer[RX_BUFFER_SIZE];//Ontvangen verichten worden hier in ondergebracht
+char txBuffer[TX_BUFFER_SIZE];//opslag voor te verzenden berichten
 
 uint8_t rxReadPos = 0;
 uint8_t rxWritePos = 0;
@@ -26,6 +36,7 @@ void initSerial()
   UCSR0B = (1 << RXEN0);//zet de serial ontvanger aan
   UCSR0B |= (1 << RXCIE0);//iets klaar om te lezen interrupt
   UCSR0B |= (1 << TXEN0);
+//  UCSR0B |= (1 << TXCIE0);interrupt is wordt momenteel niet gebruikt
   UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);//zet de bit groote
 }
 /*
@@ -84,7 +95,7 @@ Stopt een serie aan tekens in een que (array) om verstuurd te worden.
 void serialWrite(char c[])
 {
   uint8_t n = sizeof(c) / sizeof(uint8_t);
-	for(uint8_t i = 0; i < n; i++)
+	for(uint8_t i = 0; i < strlen(c); i++)
 	{
 		appendSerial(c[i]);
 	}
@@ -93,6 +104,14 @@ void serialWrite(char c[])
 	{
 		UDR0 = 0;
 	}
+}
+
+void sendImmediate(char c)
+{
+  /* Wait for empty transmit buffer */
+  //while ( !( UCSR0A & (1<<UDRE)) ){}
+  loop_until_bit_is_set(UCSR0A, UDRE0);
+  UDR0 = c;
 }
 
 void sendCharacter()

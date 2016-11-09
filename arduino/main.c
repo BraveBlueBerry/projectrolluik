@@ -2,10 +2,12 @@
 #define F_CPU	16000000
 #include <avr/interrupt.h>
 #include "serial.h"
+#include <util/delay.h>
 
 int main(void) {
   initSerial();
-  //Sei();
+  sei();
+
   while(1){
 
   }
