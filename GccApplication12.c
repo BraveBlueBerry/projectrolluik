@@ -5,6 +5,7 @@
 #include "functions.h"
 #include "input.h"
 #include "sensors.h"
+#include "blinds.h"
 #include <util/delay.h>
 
 
@@ -13,10 +14,10 @@ int main(void) {
 	initSerial();
 	sei();
 	adc_init();
-
+	blinds_init();
+	
 	while(1){
-		
-		
+		doSomethingWithInput();
 		_delay_ms(1000);
 		
 	}

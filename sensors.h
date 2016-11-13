@@ -1,3 +1,8 @@
+/* Bron: https://hekilledmywire.wordpress.com/2011/03/16/using-the-adc-tutorial-part-5/
+ * Lichtsensor op analoge poort 0 (10K ohm weerstand)
+ * Temperatuursensor op analoge poort 1
+ */
+
 uint16_t adc_value;                             // Variabele om de waarde van de analoge input (de ADC) in op te slaan
 char buffer[5];                                 // Dit is iets voor de itoa functie, hiermee krijg ik het in een terminal zodat ik waardes kan aflezen in normale taal
 uint8_t i=0;                                    // Variabele voor de for() loop
@@ -19,12 +24,14 @@ void adc_init(void){
 }
 
 double calc_light(int adc_value){
+	adc_value = read_adc(0);
 	double vout = adc_value*0.0048828125;
 	int lightL=500/(10*((5-vout)/vout));
 	return lightL;
 }
 
 int calc_temp(int adc_value){
+	adc_value = read_adc(1);
 	tempC = ((adc_value / 1024.0 * 5000)-500) * 0.1;
 	return tempC;
 }

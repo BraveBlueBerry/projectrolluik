@@ -66,10 +66,6 @@ void debug(){
 	
 }
 
-void getTemp(){
-	
-}
-
 void sendOk(){
 	
 }
