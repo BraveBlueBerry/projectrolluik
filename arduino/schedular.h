@@ -4,7 +4,7 @@ Voor gebruik dient de initSchedular() te zijn aangeroepen.
 Om een taak in de schedular te zetten moet addTask() worden aangeroepen.
 Om de schedular verder te laten functioneren moet callTasks() constant worden aangeroepen.
 */
-#include <util/delay.h>
+//#include <util/delay.h>
 #define NUMBER_OF_TASKS 2
 uint8_t secondCount;
 void (*task[NUMBER_OF_TASKS]) (void);
@@ -32,6 +32,11 @@ initSchedular() Initialiseerd de globale variabelen die vereist zijn.
 */
 void initSchedular(void)
 {
+  OCR1A = 0x3D08;          //Zet de waarde van het CTC compare register
+  TCCR1B |= (1 << WGM12); // Mode 4, CTC on OCR1A
+  TIMSK1 |= (1 << OCIE1A);//Set interrupt on compare match
+  TCCR1B |= (1 << CS12) | (1 << CS10);// set prescaler to 1024 and start the timer
+
   taskindex = 0;
   secondCount = 0;
 }
@@ -41,7 +46,7 @@ Verder wordt secondCount verlaagt bij het overschrijden van correcte waarden (60
 */
 void second(void)
 {
-  _delay_ms(999);
+  //_delay_ms(999);
   secondCount++;
   if (secondCount >= 60) {
     secondCount = 0;
@@ -64,11 +69,21 @@ callTasks(void) kijkt over er taken zijn die moeten worden uitgevoerd.
 */
 void callTasks(void)
 {
-  for (uint8_t i = 0; i < taskindex; i++) {
     if (taskStart[i] == secondCount) {
       (*task[i]) ();
       taskStart[i] = calcTime(taskDelay[i]);
     }
   }
-  second();
+  //second();
+}
+/*
+Deze interrupt verhoogt de secondenteller (secondCount) elke seconde.
+Verder wordt secondCount verlaagt bij het overschrijden van correcte waarden (60 en hoger).
+*/
+ISR (TIMER1_COMPA_vect)
+{
+  secondCount++;
+  if (secondCount >= 60) {
+    secondCount = 0;
+  }
 }
