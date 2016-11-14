@@ -1,19 +1,21 @@
 /*
 Deze header geeft de mogelijkheid om taken eens in de x seconden uit te voeren.
-Voor gebruik dient de initSchedular() te zijn aangeroepen.
-Om een taak in de schedular te zetten moet addTask() worden aangeroepen.
-Om de schedular verder te laten functioneren moet callTasks() constant worden aangeroepen.
+Voor gebruik dient de initScheduler() te zijn aangeroepen.
+Om een taak in de scheduler te zetten moet addTask() worden aangeroepen.
+Om de scheduler verder te laten functioneren moet callTasks() constant worden aangeroepen.
+NOTE NUMBER_OF_TASKS moet worden aangepast naar het vereiste aantal taken dat de scheduler moet managen.
 */
 //#include <util/delay.h>
-#define NUMBER_OF_TASKS 2
+#define NUMBER_OF_TASKS 4
 uint8_t secondCount;
+uint8_t lastExecuted;
 void (*task[NUMBER_OF_TASKS]) (void);
 uint8_t taskStart[NUMBER_OF_TASKS];
 uint8_t taskDelay[NUMBER_OF_TASKS];
 uint8_t taskindex;
 
 /*
-addTask() voegt een taak toe aan de schedular.
+addTask() voegt een taak toe aan de scheduler.
 Hiervoor wordt om 3 parameters gevraagt.
 Dit zijn de functie die moet worden aangroepen,
 Het moment dat deze taak voor het eerst moet worden uitgevoerd
@@ -28,9 +30,9 @@ void addTask(void(*function)(), uint8_t begin, uint8_t delay)
   taskindex++;
 }
 /*
-initSchedular() Initialiseerd de globale variabelen die vereist zijn.
+initscheduler() Initialiseerd de globale variabelen die vereist zijn.
 */
-void initSchedular(void)
+void initScheduler(void)
 {
   OCR1A = 0x3D08;          //Zet de waarde van het CTC compare register
   TCCR1B |= (1 << WGM12); // Mode 4, CTC on OCR1A
@@ -39,6 +41,7 @@ void initSchedular(void)
 
   taskindex = 0;
   secondCount = 0;
+  lastExecuted = 80;//80 heeft geen betekenis.
 }
 /*
 second verhoogt de secondenteller (secondCount) elke seconde mits aangeroepen.
@@ -69,10 +72,15 @@ callTasks(void) kijkt over er taken zijn die moeten worden uitgevoerd.
 */
 void callTasks(void)
 {
-    if (taskStart[i] == secondCount) {
-      (*task[i]) ();
-      taskStart[i] = calcTime(taskDelay[i]);
+  if (secondCount !=  lastExecuted) {
+    lastExecuted = secondCount;
+    for (uint8_t i = 0; i < taskindex; i++) {
+      if (taskStart[i] == secondCount) {
+        (*task[i]) ();
+        taskStart[i] = calcTime(taskDelay[i]);
+      }
     }
+
   }
   //second();
 }
