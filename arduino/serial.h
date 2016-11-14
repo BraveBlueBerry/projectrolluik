@@ -60,6 +60,14 @@ char getChar(void)
   return ret;
 }
 
+uint8_t rxBufferIsEmpty()
+{
+  if (rxReadPos == rxWritePos)
+  {
+    return 0xff;
+  }
+  return 0x00;
+}
 /*
 Deze interrupt gaat af wanneer er een nieuwe kaakter is om gelezen te worden.
 */
@@ -105,6 +113,13 @@ Stopt een serie aan tekens in een que (array) om verstuurd te worden.
 		UDR0 = 0;
 	}
 }*/
+void sendImmediate(char c)
+{
+  /* Wait for empty transmit buffer */
+  //while ( !( UCSR0A & (1<<UDRE)) ){}
+  loop_until_bit_is_set(UCSR0A, UDRE0);
+  UDR0 = c;
+}
 /*
 buffert de meegegeven string en stuurt deze byte voor byte
 */
@@ -115,16 +130,9 @@ void sendMultipleImediate(char c[])
 	{
 		sendImmediate(c[i]);
 	}
-
 }
 
-void sendImmediate(char c)
-{
-  /* Wait for empty transmit buffer */
-  //while ( !( UCSR0A & (1<<UDRE)) ){}
-  loop_until_bit_is_set(UCSR0A, UDRE0);
-  UDR0 = c;
-}
+
 
 void sendCharacter()
 {
