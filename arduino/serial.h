@@ -44,7 +44,7 @@ Lees de volgende karakter en zet de kijker naar de volgende. Als er geen nieuwe 
 */
 char getChar(void)
 {
-	char ret = '\0';
+	char ret = 0xff;
 
 	if(rxReadPos != rxWritePos)
 	{
