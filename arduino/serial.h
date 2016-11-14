@@ -92,7 +92,7 @@ void appendSerial(char c)
 /*
 Stopt een serie aan tekens in een que (array) om verstuurd te worden.
 */
-void serialWrite(char c[])
+/*void serialWrite(char c[])
 {
   uint8_t n = sizeof(c) / sizeof(uint8_t);
 	for(uint8_t i = 0; i < strlen(c); i++)
@@ -104,6 +104,18 @@ void serialWrite(char c[])
 	{
 		UDR0 = 0;
 	}
+}*/
+/*
+buffert de meegegeven string en stuurt deze byte voor byte
+*/
+void sendMultipleImediate(char c[])
+{
+  uint8_t n = sizeof(c) / sizeof(uint8_t);
+	for(uint8_t i = 0; i < strlen(c); i++)
+	{
+		sendImmediate(c[i]);
+	}
+
 }
 
 void sendImmediate(char c)
