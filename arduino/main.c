@@ -2,13 +2,15 @@
 #define F_CPU	16000000
 #include <avr/interrupt.h>
 #include "serial.h"
-#include <util/delay.h>
+#include "schedular.h"
 
 int main(void) {
-  initSerial();
+  testInit();
+  initSchedular();
   sei();
 
   while(1){
-
+    callTasks();
   }
+  return 0;
 }
