@@ -61,18 +61,34 @@ class settings(view):
         #
         self.gfill_value = BooleanVar(self.tabs[1])
         self.gfill_label = Label(self.tabs[1], text="Fill empty spaces in overview")
-        self.gfill_radio = [Radiobutton(self.tabs[1], text="Leave Open", variable=self.gfill_value, value=False),
-                                 Radiobutton(self.tabs[1], text="Fill", variable=self.gfill_value, value=True)]
+        self.gfill_radio = [Radiobutton(self.tabs[1], text="Fill", variable=self.gfill_value, value=True),
+                            Radiobutton(self.tabs[1], text="Leave Open", variable=self.gfill_value, value=False)]
+        if self.root.settings['graph_fill']:
+            self.gfill_radio[0].select()
+        else:
+            self.gfill_radio[1].select()
 
         self.ggrid_growth_value = BooleanVar(self.tabs[1])
         self.ggrid_growth_label = Label(self.tabs[1], text="Grow graph grid in direction")
         self.ggrid_growth_radio = [Radiobutton(self.tabs[1], text="Horizontal", variable=self.ggrid_growth_value, value=True),
                                  Radiobutton(self.tabs[1], text="Vertical", variable=self.ggrid_growth_value, value=False)]
+        if self.root.settings['graph_grid_growth_x']:
+            self.ggrid_growth_radio[0].select()
+        else:
+            self.ggrid_growth_radio[1].select()
 
         self.ggraph_fill_growth_value = BooleanVar(self.tabs[1])
         self.ggraph_fill_growth_label = Label(self.tabs[1], text="Graph fill in direction")
         self.ggraph_fill_growth_radio = [Radiobutton(self.tabs[1], text="Horizontal", variable=self.ggraph_fill_growth_value, value=True),
                                  Radiobutton(self.tabs[1], text="Vertical", variable=self.ggraph_fill_growth_value, value=False)]
+        if self.root.settings['graph_growth_x']:
+            self.ggraph_fill_growth_radio[0].select()
+        else:
+            self.ggraph_fill_growth_radio[1].select()
+
+
+
+
         self.drawframe()
 
     def switchFrame(self, frameTo):

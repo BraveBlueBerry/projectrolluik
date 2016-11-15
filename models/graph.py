@@ -76,7 +76,7 @@ class graph:
                 'y2': randint(10,100)
             })
         self.update()
-        self.canvas.after(300,self.makelines)
+        self.canvas.after(500,self.makelines)
     def drawgrid(self):
         self.canvas.delete('grid')
         # x to x

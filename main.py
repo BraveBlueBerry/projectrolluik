@@ -8,7 +8,7 @@ class main:
     def __init__(self):
         # init interface
         self.settings = {
-            'graph_growth_x'     :False,
+            'graph_growth_x'     :True,
             'graph_fill'         :True,
             'graph_grid_growth_x':True
         }
