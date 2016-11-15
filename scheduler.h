@@ -5,7 +5,7 @@ Om een taak in de schedular te zetten moet addTask() worden aangeroepen.
 Om de schedular verder te laten functioneren moet callTasks() constant worden aangeroepen.
 */
 #include <util/delay.h>
-#define NUMBER_OF_TASKS 6
+#define NUMBER_OF_TASKS 5
 uint8_t secondCount;
 void (*task[NUMBER_OF_TASKS]) (void);
 uint8_t taskStart[NUMBER_OF_TASKS];

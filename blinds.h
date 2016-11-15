@@ -7,10 +7,11 @@
 extern int blindState;
 extern int changing;
 extern int changeCounter;
+extern int manual;
 
-extern int minTempTest;
-extern int maxTempTest;
-extern int maxLightTest;
+extern int minTemp;
+extern int maxTemp;
+extern int maxLight;
 
 void blindsInit(){
 	DDRB = 0xFF;
@@ -48,16 +49,18 @@ void blindIsClosing(){
  * past hij de blindState aan.
  */
 void blindShouldChange(){
-	int newState = 0;
-	if(calcLight() > maxLightTest){
-		if(calcTemp() < maxTempTest && calcTemp() > minTempTest){
-			newState = 1;
+	if(manual == 0){
+		int newState = 0;
+		if(calcLight() > maxLight){
+			if(calcTemp() < maxTemp && calcTemp() > minTemp){
+				newState = 1;
+			}
 		}
-	}
-	if(newState != blindState){
-		changing = 1;
-	}
-	blindState = newState;
+		if(newState != blindState){
+			changing = 1;
+		}
+		blindState = newState;
+	}	
 }
 /* Deze functie kijkt elke seconde of changing op 1 staat (want dan moet de 
  * blind iets gaan doen) en welke state de blind moet gaan hebben. Hij laat

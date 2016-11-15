@@ -44,7 +44,7 @@ Lees de volgende karakter en zet de kijker naar de volgende. Als er geen nieuwe 
 */
 char getChar(void)
 {
-	char ret = '\0';
+	char ret = 0xFF;
 
 	if(rxReadPos != rxWritePos)
 	{
@@ -89,21 +89,18 @@ void appendSerial(char c)
 		txWritePos = 0;
 	}
 }
+
 /*
-Stopt een serie aan tekens in een que (array) om verstuurd te worden.
+buffert de meegegeven string en stuurt deze byte voor byte
 */
-void serialWrite(char c[])
+void sendMultipleImmediate(char c[])
 {
 	uint8_t n = sizeof(c) / sizeof(uint8_t);
 	for(uint8_t i = 0; i < strlen(c); i++)
 	{
-		appendSerial(c[i]);
+		sendImmediate(c[i]);
 	}
 
-	if(UCSR0A & (1 << UDRE0))
-	{
-		UDR0 = 0;
-	}
 }
 
 void sendImmediate(char c)
