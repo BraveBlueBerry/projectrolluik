@@ -3,11 +3,10 @@ import math
 
 class interface:
     def __init__(self, root):
-        print("Hello world")
         self.root = root
         self.master = Tk()
-        self.master.geometry("500x500")
-        self.width = 500
+        self.master.geometry("1100x500")
+        self.width = 1100
         self.height = 500
         self.frame = Frame(width=math.floor(self.width*0.25), height=self.height, bg="#e0e0e0")
         self.frame.place(relx=0, rely=0)
@@ -24,9 +23,16 @@ class interface:
 
         self.width = width
         self.height = height
+        if self.height < 300:
+            self.master.geometry(str(width) + "x300")
+        if self.width < 550:
+            self.master.geometry("550x" + str(height))
+        if self.height == 1 and self.width == 1:
+            self.master.geometry("1100x500")
+
         self.frame.config(width=math.floor(self.width*0.25), height=self.height)
         self.frame.place(x=0, y=0)
 
 
 if __name__ == '__main__':
-    interface('x')
+    quit("Not main")

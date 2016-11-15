@@ -13,14 +13,13 @@ class controlunitoverview(view):
         self.drawframe()
         pass
     def drawframe(self):
+        # Generic for everything
         xoffset = math.floor(self.root.interface.width * 0.25)
         width = math.ceil(self.root.interface.width * 0.75)
         self.frame.config(width=self.root.interface.width-xoffset, height=self.root.interface.height)
-        print(xoffset)
         self.frame.place(x=xoffset,y=0)
         self.frame.tkraise()
-
-        print("Hoi")
+        # End-generic
         self.label.place(x=(xoffset+100), y=math.floor(self.root.interface.height * 0.50), width=100, height=100)
     def send(self):
         pass
@@ -29,3 +28,6 @@ class controlunitoverview(view):
     def drawlines(self):
         # Send shit to graph model
         pass
+
+if __name__ == '__main__':
+    quit("Not main")

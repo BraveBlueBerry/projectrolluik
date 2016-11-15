@@ -7,10 +7,16 @@ from views.menu import menu
 class main:
     def __init__(self):
         # init interface
-
+        self.settings = {
+            'graph_growth_x'     :False,
+            'graph_fill'         :True,
+            'graph_grid_growth_x':True
+        }
         self.interface = interface(self)
         self.menu = menu(self)
         self.size = []
+
+
         self.loop()
     def addcontrolunit(self, cu):
         pass
