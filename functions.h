@@ -146,6 +146,7 @@ void reset(){
 	maxLight = defaultMaxLight;
 	minHeightBlind = defaultMinHeightBlind;
 	maxHeightBlind = defaultMaxHeightBlind;
+	manual = 0;
 	sendOk();
 }
 
