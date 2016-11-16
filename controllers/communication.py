@@ -1,18 +1,13 @@
+if __name__ == '__main__':
+    print("Not main")
+    quit()
+
 import time
 import serial
 import math
 import traceback
 import codecs
-
-if __name__ == '__main__':
-    import sys
-    import os
-    PACKAGE_PARENT = '..'
-    SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
-    sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-    from models.switch import switch
-else:
-    from models.switch import switch    # For ease of use
+from models.switch import switch    # For ease of use
 
 
 class communication:
@@ -61,8 +56,11 @@ class communication:
 
     def pollcommunication(self, opcode, value=None, wait=False):
         responseBytes = 0
+        print(opcode)
+        print(value)
         for case in switch(opcode):
             if case('00000000'):        # set status
+                print("Hello")
                 toSend = chr(int(opcode,2)).encode('utf-8')
                 responseBytes = 1
             if case('00000001'):        # set min temp
@@ -84,7 +82,7 @@ class communication:
                 toSend = chr(int(opcode, 2)).encode('utf-8')
                 responseBytes = 1
             if case('00001001'):        # debug
-                return False            # Not implemented
+                pass    # Not implemented
             if case('00001010'):        # get temp
                 toSend = chr(int(opcode, 2)).encode('utf-8')
                 responseBytes = 1
@@ -107,19 +105,17 @@ class communication:
             if case('00010000'):        # get max licht
                 toSend = chr(int(opcode, 2)).encode('utf-8')
                 responseBytes = 2
+            print(opcode)
         # Opcodes have been made, all functions say what they expect
         self.ser.write(toSend)
+        print(value)
         if value != None:
             bytesToSend = math.ceil(value.bit_length() / 8)
-            self.ser.write(value.to_bytes(byteToSend, 'big'))
+            print("???")
+            if opcode == '00000000':
+                print(value.to_bytes(bytesToSend, 'big'))
+            self.ser.write(value.to_bytes(bytesToSend, 'big'))
 
         if wait:
             return self.get_data(responseBytes)
         return
-
-if __name__ == '__main__':
-    c = communication('COM3')
-    c.pollcommunication('00001011')
-    d = c.get_data(2)
-
-    #print(int(codecs.encode(c.ser.read(1), 'hex').decode('utf-8'), 16))

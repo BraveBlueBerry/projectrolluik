@@ -13,4 +13,5 @@ class scanner:
                 if device.serial_number not in self.root.controlunits.keys():   # Make controlunit
                     c = communication(device.device)
                     cu = controlunit(c)
-                    self.root.addcontrolunit(device.serial_number, cu)
+                    if cu.communication.connected:
+                        self.root.addcontrolunit(device.serial_number, cu)

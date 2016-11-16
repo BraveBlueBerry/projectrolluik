@@ -27,8 +27,8 @@ class menu(view):
             self.general.view.drawframe()
         else:
             for x in self.arduinobuttons:
-                if x.id == self.active:
-                    x.view.drawframe()
+                if self.arduinobuttons[x]['button'].id == self.active:
+                    self.arduinobuttons[x]['button'].view.drawframe()
         self.settings.place(y=(self.root.interface.height-h), x=0, width=w, height=h)
         i = 0;
         for x in sorted(self.arduinobuttons.keys()):
@@ -41,7 +41,7 @@ class menu(view):
             cu = cudict[serial]
             self.arduinobuttons[cu['friendlyid']] = {
                 'id': serial,
-                'button': menubutton("Control Unit {}".format(cu['friendlyid']), self.root, "assets\whitespace.png", self, controlunitoverview(self.root, cu))
+                'button': menubutton("Control Unit {}".format(cu['friendlyid']), self.root, "assets\whitespace.png", self, controlunitoverview(self.root, cu['controlunit']))
             }
         self.draw()
     def setactive(self, id):

@@ -5,6 +5,7 @@ from views.view import view
 from views.menu import menu
 import time
 from threading import Thread
+import traceback
 
 class main:
     def __init__(self):
@@ -15,11 +16,12 @@ class main:
             'graph_grid_growth_x':True
         }
         self.staticidlist = {}
+        self.controlunits = {}
         self.interface = interface(self)
         self.menu = menu(self)
         self.size = []
         self.scanner = scanner(self)
-        self.controlunits = {}
+
         self.running = True
         self.send = []
         self.thread = Thread(None,self.getdata)
@@ -34,6 +36,7 @@ class main:
             'friendlyid': self.staticidlist[serial]
         }
         self.menu.setcontrolunits(self.controlunits)
+        self.menu.general.view.addarduino(cu)
     def removecontrolunit(self, id):
         pass
     def loop(self):
@@ -50,13 +53,27 @@ class main:
             if lightcounter == 300:
                 lightcounter = 0
                 for cu in self.controlunits:
-                    print("Asking for light")
+                    self.controlunits[cu]['controlunit'].communication.pollcommunication("00001010")
                     self.controlunits[cu]['controlunit'].communication.pollcommunication("00001011")
-            if counter == 100:
+                    self.controlunits[cu]['controlunit'].communication.pollcommunication("00001100")
+
+            if counter == 50:
                 counter = 0
                 for cu in self.controlunits:
-                    if len(self.controlunits[cu]['controlunit'].communication.data) > 0:
-                        print(self.controlunits[cu]['controlunit'].communication.get_data(2))
+                    if len(self.controlunits[cu]['controlunit'].communication.data) >= 4:
+                        t = int(time.time())
+                        # Temp
+                        temp = self.controlunits[cu]['controlunit'].communication.get_data(1)
+                        self.controlunits[cu]['controlunit'].appenddata(t,'temp',temp[0])
+                        # Light
+                        light = self.controlunits[cu]['controlunit'].communication.get_data(2)
+                        light = light[0] * 256 + light[1]
+                        self.controlunits[cu]['controlunit'].appenddata(t,'light',light)
+                        # State
+                        state = self.controlunits[cu]['controlunit'].communication.get_data(1)
+                        self.controlunits[cu]['controlunit'].appenddata(t,'state',state[0])
+                        self.menu.draw()
+
             try:
                 testsize = [self.interface.master.winfo_width(), self.interface.master.winfo_height()]
                 if testsize != self.size:
@@ -66,6 +83,7 @@ class main:
                     self.interface.frame.tkraise()
                 self.interface.update()
             except:
+                 traceback.print_exc()
                  print("Quitting")
                  self.running = False
                  quit()
