@@ -101,6 +101,12 @@ class general:
         pass
     def reset(self):
         pass
+    def setarduinolist(self,controlunits):
+        for canvas in canvasList:
+            del canvas['canvas']
+        self.canvasList = []
+        for controlunit in controlunits:
+            self.addarduino(controlunit['controlunit'])
     def addarduino(self, controlunit):
         canvas = Canvas(self.frame, bg='#ccc')
         g = graph(canvas,controlunit, self)

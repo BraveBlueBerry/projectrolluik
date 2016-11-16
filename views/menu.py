@@ -37,6 +37,7 @@ class menu(view):
         self.general.place(y=0, x=0, width=w, height=h)
     def setcontrolunits(self, cudict):
         # geef een nieuwe dict met controlunits als er controlunits gevonden zijn
+        self.arduinobuttons = {}
         for serial in cudict:
             cu = cudict[serial]
             self.arduinobuttons[cu['friendlyid']] = {

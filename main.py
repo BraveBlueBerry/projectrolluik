@@ -21,12 +21,10 @@ class main:
         self.menu = menu(self)
         self.size = []
         self.scanner = scanner(self)
-
         self.running = True
         self.send = []
         self.thread = Thread(None,self.getdata)
         self.thread.start()
-
         self.loop()
     def addcontrolunit(self, serial, cu):
         if serial not in self.staticidlist.keys():
@@ -38,7 +36,13 @@ class main:
         self.menu.setcontrolunits(self.controlunits)
         self.menu.general.view.addarduino(cu)
     def removecontrolunit(self, id):
-        pass
+        popped = self.controlunits.pop(id, None)
+        if popped == None:
+            print("Id didnt exist in the first place")
+        else:
+            print("Removed {}".format(id))
+            self.menu.setcontrolunits(self.controlunits)
+            self.menu.general.setcontrolunits(self.controlunits)
     def loop(self):
         counter = 0
         lightcounter = 0

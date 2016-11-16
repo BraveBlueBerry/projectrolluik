@@ -11,7 +11,9 @@ from models.switch import switch    # For ease of use
 
 
 class communication:
-    def __init__(self, com):
+    def __init__(self, com, serial_num, root):
+        self.serial_number = serial_num
+        self.root = root
         self.writing = False    # Semaphore
         self.connected = False
         try:
@@ -23,6 +25,7 @@ class communication:
             self.ser.open()
             self.connected = True
         except:
+            self.root.removecontrolunit(self.serial_number)
             print("Could not init port")
         self.data = []
 
@@ -37,6 +40,8 @@ class communication:
                     self.data.append(int(codecs.encode(self.ser.read(1), 'hex').decode('utf-8'), 16))
                     self.writing = False
         except:
+            self.root.removecontrolunit(self.serial_number)
+            print("Read from inwaiting failed")
             self.connected = False
         self.writing = False    # open data
         return len(self.data)
@@ -56,65 +61,63 @@ class communication:
 
     def pollcommunication(self, opcode, value=None, wait=False):
         responseBytes = 0
-        print(opcode)
-        print(value)
-        for case in switch(opcode):
-            if case('00000000'):        # set status
-                print("Hello")
-                toSend = chr(int(opcode,2)).encode('utf-8')
-                responseBytes = 1
-            if case('00000001'):        # set min temp
-                toSend = chr(int(opcode,2)).encode('utf-8')
-                responseBytes = 1
-            if case('00000010'):        # set max temp
-                toSend = chr(int(opcode,2)).encode('utf-8')
-                responseBytes = 1
-            if case('00000011'):        # set max light
-                toSend = chr(int(opcode,2)).encode('utf-8')
-                responseBytes = 1
-            if case('00000100'):        # set min hoogte zonnescherm
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 1
-            if case('00000101'):        # set max hoogte zonnescherm
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 1
-            if case('00000110'):        # reset
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 1
-            if case('00001001'):        # debug
-                pass    # Not implemented
-            if case('00001010'):        # get temp
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 1
-            if case('00001011'):        # get light
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 2
+        try:
+            for case in switch(opcode):
+                if case('00000000'):        # set status
+                    print("Hello")
+                    toSend = chr(int(opcode,2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00000001'):        # set min temp
+                    toSend = chr(int(opcode,2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00000010'):        # set max temp
+                    toSend = chr(int(opcode,2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00000011'):        # set max light
+                    toSend = chr(int(opcode,2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00000100'):        # set min hoogte zonnescherm
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00000101'):        # set max hoogte zonnescherm
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00000110'):        # reset
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00001001'):        # debug
+                    pass    # Not implemented
+                if case('00001010'):        # get temp
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00001011'):        # get light
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 2
 
-            if case('00001100'):        # get status van zonnescherm
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 1
-            if case('00001101'):        # get hoogte van zonnescherm (hoe ver hij van de onderkant af zit)
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 2
-            if case('00001110'):        # get min temp
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 1
-            if case('00001111'):        # get max temp
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 1
-            if case('00010000'):        # get max licht
-                toSend = chr(int(opcode, 2)).encode('utf-8')
-                responseBytes = 2
-            print(opcode)
-        # Opcodes have been made, all functions say what they expect
-        self.ser.write(toSend)
-        print(value)
-        if value != None:
-            bytesToSend = math.ceil(value.bit_length() / 8)
-            print("???")
-            if opcode == '00000000':
-                print(value.to_bytes(bytesToSend, 'big'))
-            self.ser.write(value.to_bytes(bytesToSend, 'big'))
+                if case('00001100'):        # get status van zonnescherm
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00001101'):        # get hoogte van zonnescherm (hoe ver hij van de onderkant af zit)
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 2
+                if case('00001110'):        # get min temp
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00001111'):        # get max temp
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 1
+                if case('00010000'):        # get max licht
+                    toSend = chr(int(opcode, 2)).encode('utf-8')
+                    responseBytes = 2
+                print(opcode)
+            # Opcodes have been made, all functions say what they expect
+            self.ser.write(toSend)
+            if value != None:
+                bytesToSend = math.ceil(value.bit_length() / 8)
+                self.ser.write(value.to_bytes(bytesToSend, 'big'))
+        except:
+            self.root.removecontrolunit(self.serial_number)
+            print("Serial write failed")
 
         if wait:
             return self.get_data(responseBytes)
