@@ -1,18 +1,16 @@
-import serial
-import glob
-
+import serial.tools.list_ports
+from controllers.communication import communication
+from controllers.controlunit import controlunit
 class scanner:
-    def __init__(self):
+    def __init__(self, root):
+        self.root = root
         # Moet system checken voor poorten... Windows is COM# en Linux is
-        if sys.platform.startswith('win'):
-            ports = ['COM%s' % (i + 1) for i in range(256)] # Make a list with COM1 to COM255
-        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-            # this excludes your current terminal "/dev/tty"
-            ports = glob.glob('/dev/tty[A-Za-z]*') # Makes a list with the Linux ports... or so it should
-        #This needs work
-        self.ports = ports
+        pass
 
     def scanforports(self):
-        for p in self.ports:
-            pass
-        pass
+        for device in serial.tools.list_ports.comports():
+            if device.description.find('Arduino Uno') != -1: # Gevonden
+                if device.serial_number not in self.root.controlunits.keys():   # Make controlunit
+                    c = communication(device.device)
+                    cu = controlunit(c)
+                    self.root.addcontrolunit(device.serial_number, cu)

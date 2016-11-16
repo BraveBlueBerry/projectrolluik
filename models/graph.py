@@ -3,7 +3,6 @@ from random import randint
 class graph:
     def __init__(self, canvas):
         self.canvas = canvas
-        print(self.canvas)
         #self.controlunit = controlunit
         self.width = 0
         self.height = 0

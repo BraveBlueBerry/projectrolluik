@@ -11,7 +11,7 @@ class settings(view):
         self.menuFrame = Frame(width=0, height=0, bg='#e0e0e0')
         self.tabButtonOne = Button(self.menuFrame, text="Control Units", command=(lambda: self.switchFrame(0)))
         self.tabButtonTwo = Button(self.menuFrame, text="Program Settings", command=(lambda: self.switchFrame(1)))
-        self.tabButtonOne.invoke()
+
 
         #
         #       Tab 1
@@ -88,8 +88,7 @@ class settings(view):
 
 
 
-
-        self.drawframe()
+        self.tabButtonOne.invoke()  # Drawframe met een omweg LOL
 
     def switchFrame(self, frameTo):
         self.activeFrame = frameTo
@@ -100,6 +99,7 @@ class settings(view):
             self.tabButtonOne.config(bg='#eee')
             self.tabButtonTwo.config(bg='#fcc')
         self.drawframe()
+
     def drawframe(self):
         # Go check for controlunits
 
@@ -186,9 +186,5 @@ class settings(view):
             pass
     def reset(self):
         pass
-    def drawlines(self):
-        # Send shit to graph model
-        pass
-
 if __name__ == '__main__':
     quit("Not main")
