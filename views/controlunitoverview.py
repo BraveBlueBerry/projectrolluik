@@ -5,7 +5,8 @@ import math
 
 class controlunitoverview(view):
     def __init__(self,root,text):
-        self.graph = graph("cu")
+        print(text)
+        #self.graph = graph("cu")
         self.root = root
         self.text = text
         self.frame = Frame(width=0, height=0, bg='#fff')

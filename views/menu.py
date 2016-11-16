@@ -8,7 +8,7 @@ import math
 class menu(view):
     def __init__(self, root):
         super().__init__(root)
-        self.arduinobuttons = []
+        self.arduinobuttons = {}
         self.colours = {
             'active':'#fcc',
             'normal':'#eee',
@@ -30,21 +30,33 @@ class menu(view):
                 if x.id == self.active:
                     x.view.drawframe()
         self.settings.place(y=(self.root.interface.height-h), x=0, width=w, height=h)
+        i = 0;
+        for x in sorted(self.arduinobuttons.keys()):
+            i += 1
+            self.arduinobuttons[x]['button'].place(y=h*i, x=0, width=w, height=h)
         self.general.place(y=0, x=0, width=w, height=h)
     def setcontrolunits(self, cudict):
         # geef een nieuwe dict met controlunits als er controlunits gevonden zijn
-        pass
+        for serial in cudict:
+            cu = cudict[serial]
+            self.arduinobuttons[cu['friendlyid']] = {
+                'id': serial,
+                'button': menubutton("Control Unit {}".format(cu['friendlyid']), self.root, "assets\whitespace.png", self, controlunitoverview(self.root, cu))
+            }
+        self.draw()
     def setactive(self, id):
+        self.general.config(bg=self.colours['normal'])
+        self.settings.config(bg=self.colours['normal'])
         for x in self.arduinobuttons:
-            x.config(bg=self.colours['normal'])
-            if x.id == id:
-                x.config(bg=self.colours['active'])
+            print(self.arduinobuttons[x]['button'])
+            self.arduinobuttons[x]['button'].config(bg=self.colours['normal'])
+            if str(self.arduinobuttons[x]['button']) == id:
+                print("Its this one")
+                self.arduinobuttons[x]['button'].config(bg=self.colours['active'])
         # check settings en general
         if self.settings.id == id:
             self.settings.config(bg=self.colours['active'])
-            self.general.config(bg=self.colours['normal'])
         if self.general.id == id:
-            self.settings.config(bg=self.colours['normal'])
             self.general.config(bg=self.colours['active'])
         self.active = id
         # switch naar geklikt knopje

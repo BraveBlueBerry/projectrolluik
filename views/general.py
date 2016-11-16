@@ -3,7 +3,7 @@ from views.view import view
 from tkinter import *
 import math
 
-class general(view):
+class general:
     def __init__(self,root):
         self.root = root
         self.frame = Frame(width=500, height=500, bg='#fff')
@@ -27,7 +27,6 @@ class general(view):
     def drawframe(self):
         xoffset = math.floor(self.root.interface.width * 0.25)
         width = math.ceil(self.root.interface.width * 0.75)
-        print(self.root.settings)
         # Canvas place loop
         limit = 0
         x = 1
@@ -58,7 +57,6 @@ class general(view):
                     cury += 1
                 if self.root.settings['graph_fill']:   # Use odd spacing
                     if curx == 0 and cury == 0: # First one
-                        print("????")
                         canv['canvas'].config(width=graphodd, height=graphheight)
                         canv['canvas'].place(x=0,y=0)
                         canv['graph'].setdimensions(graphodd, graphheight)

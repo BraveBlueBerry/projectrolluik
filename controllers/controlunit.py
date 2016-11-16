@@ -1,7 +1,8 @@
 import time
 
 class controlunit:
-    def __init__(self):
+    def __init__(self, comm):
+        self.communication = comm
         self.data = {}
     def appenddata(self, timestamp, typeof, value):
         if timestamp not in self.data:

@@ -44,10 +44,12 @@ class SerialPort:
 ser_arr = []
 for device in serial.tools.list_ports.comports():
     if device.description.find('Arduino Uno') != -1: # Gevonden
-        print(device.device)
-        x = SerialPort(device.device)
-        ser_arr.append(x)
+        print(device)
+        print(device.serial_number)
+        #x = SerialPort(device.device)
+        #ser_arr.append(x)
 
+quit()
 while 1:
     for x in ser_arr:
         x.write()
