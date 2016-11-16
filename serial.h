@@ -90,6 +90,13 @@ void appendSerial(char c)
 	}
 }
 
+void sendImmediate(char c)
+{
+	/* Wait for empty transmit buffer */
+//while ( !( UCSR0A & (1<<UDRE)) ){}
+loop_until_bit_is_set(UCSR0A, UDRE0);
+UDR0 = c;
+}
 /*
 buffert de meegegeven string en stuurt deze byte voor byte
 */
@@ -100,16 +107,9 @@ void sendMultipleImmediate(char c[])
 	{
 		sendImmediate(c[i]);
 	}
-
 }
 
-void sendImmediate(char c)
-{
-	/* Wait for empty transmit buffer */
-//while ( !( UCSR0A & (1<<UDRE)) ){}
-loop_until_bit_is_set(UCSR0A, UDRE0);
-UDR0 = c;
-}
+
 
 void sendCharacter()
 {

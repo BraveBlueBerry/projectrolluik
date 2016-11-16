@@ -14,6 +14,9 @@ extern int defaultMaxHeightBlind;
 extern int valueBlind;
 extern uint32_t ID;
 
+void sendOk();
+void sendFail();
+
 void setStatus(){
 	uint8_t status = getChar();
 	if(status == 0){								// zet terug op automatishc, manual = 0 (status = 0)
@@ -25,7 +28,7 @@ void setStatus(){
 		changing = 1;
 		manual = 1;
 		sendOk();
-	} 
+	}
 	else if(status == 1 && blindState == 1){		// blinds are now open (blindState = 1), forced open (status = 1)
 		changing = 0;
 		manual = 1;
@@ -45,7 +48,7 @@ void setStatus(){
 	else {
 		sendFail();
 	}
-	
+
 }
 
 void getStatus(){
@@ -151,7 +154,7 @@ void reset(){
 }
 
 void debug(){
-	
+
 }
 
 void sendOk(){

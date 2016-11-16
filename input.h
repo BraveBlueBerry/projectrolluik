@@ -21,7 +21,7 @@ void doSomethingWithInput(){
 	if(c==6){				// opcode 0000 0110
 		reset();
 	}
-	if(c==7){				// opcode 0000 0111
+	/*if(c==7){				// opcode 0000 0111
 		//setID();
 	}
 	if(c==8){				// opcode 0000 1000
@@ -29,7 +29,7 @@ void doSomethingWithInput(){
 	}
 	if(c==9){				// opcode 0000 1001
 		//debug();
-	}
+	}*/
 	if(c==10){				// opcode 0000 1010
 		getTemp();
 	}
