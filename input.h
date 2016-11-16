@@ -22,10 +22,10 @@ void doSomethingWithInput(){
 		reset();
 	}
 	if(c==7){				// opcode 0000 0111
-		setID();
+		//setID();
 	}
 	if(c==8){				// opcode 0000 1000
-		getID();
+		//getID();
 	}
 	if(c==9){				// opcode 0000 1001
 		//debug();

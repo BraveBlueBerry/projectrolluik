@@ -149,23 +149,6 @@ void reset(){
 	sendOk();
 }
 
-void setID(){
-	uint8_t v0 = getChar();
-	uint8_t v1 = getChar();
-	uint8_t v2 = getChar();
-	uint8_t v3 = getChar();
-	
-	ID = (v3 << 24) | (v2 << 16) | (v1 << 8) | v0;
-	eeprom_write_dword((uint32_t*)12, ID);
-	sendOk();
-}
-
-void getID(){
-	uint32_t data;
-	data = eeprom_read_dword((uint32_t*)12);
-	sendMultipleImmediate(data);
-}
-
 void debug(){
 	
 }

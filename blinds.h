@@ -20,28 +20,28 @@ void blindsInit(){
 }
 
 void blindIsOpen(){
-	// Green led is on
+	// Red led is on
 	PORTB = 0x00;			// Turn off all leds
-	PORTB = 0b00000100;		// Turn on green led
+	PORTB = 0b00000001;		// Turn on red led
 	
 }
 
 void blindIsClosed(){
-	// Red led is on
+	// Green led is on
 	PORTB = 0x00;			// Turn off all leds
-	PORTB = 0b00000001;		// Turn on red led
+	PORTB = 0b00000100;		// Turn on green led
 }
 
 void blindIsOpening(){
-	// Green and yellow led is on
-	PORTB = 0x00;			// Turn off all leds
-	PORTB = 0b00000110;		// Turn on green and yellow led
-}
-
-void blindIsClosing(){
 	// Red and yellow led is on
 	PORTB = 0x00;			// Turn off all leds
 	PORTB = 0b00000011;		// Turn on red and yellow led
+}
+
+void blindIsClosing(){
+	// Green and yellow led is on
+	PORTB = 0x00;			// Turn off all leds
+	PORTB = 0b00000110;		// Turn on green and yellow led
 }
 
 /* Deze functie wordt elke 60 seconden aangeroepen om te kijken of de blind
@@ -70,6 +70,18 @@ void didBlindChange(){
 	if(changing == 1 && blindState == 0){
 		changeCounter++;
 		blindIsClosing();
+		if(changeCounter == 2){
+			blindIsClosed();
+		}
+		if(changeCounter == 4){
+			blindIsClosed();
+		}
+		if(changeCounter == 6){
+			blindIsClosed();
+		}
+		if(changeCounter == 8){
+			blindIsClosed();
+		}
 		if(changeCounter == 10){
 			changing = 0;
 			blindIsClosed();
@@ -79,6 +91,18 @@ void didBlindChange(){
 	if(changing == 1 && blindState == 1){
 		changeCounter++;
 		blindIsOpening();
+		if(changeCounter == 2){
+			blindIsOpen();
+		}
+		if(changeCounter == 4){
+			blindIsOpen();
+		}
+		if(changeCounter == 6){
+			blindIsOpen();
+		}
+		if(changeCounter == 8){
+			blindIsOpen();
+		}
 		if(changeCounter == 10){
 			changing = 0;
 			blindIsOpen();

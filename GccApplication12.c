@@ -28,8 +28,15 @@ int maxLight = 800;
 int minHeightBlind = 5;
 int maxHeightBlind = 300;
 int valueBlind = 300;
-uint32_t ID = 'e';
-uint32_t data;
+
+// variabelen voor de sensoren (gebruikt in sensors.h)
+uint16_t adcValue;                             // Variabele om de waarde van de analoge input (de ADC) in op te slaan
+char buffer[5];                                 // Dit is iets voor de itoa functie, hiermee krijg ik het in een terminal zodat ik waardes kan aflezen in normale taal
+uint8_t i=0;                                    // Variabele voor de for() loop
+int tempC=0;
+int lightL=0;
+double vout=0;
+
 
 
 int main(void) {
@@ -50,7 +57,6 @@ int main(void) {
 	
 	while(1){
 		callTasks();
-		_delay_ms(999);
 		
 	}
 }

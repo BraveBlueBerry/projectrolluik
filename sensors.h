@@ -3,12 +3,12 @@
  * Temperatuursensor op analoge poort 1
  */
 
-uint16_t adcValue;                             // Variabele om de waarde van de analoge input (de ADC) in op te slaan
-char buffer[5];                                 // Dit is iets voor de itoa functie, hiermee krijg ik het in een terminal zodat ik waardes kan aflezen in normale taal
-uint8_t i=0;                                    // Variabele voor de for() loop
-int tempC=0;
-int lightL=0;
-double vout=0;
+extern uint16_t adcValue;                             // Variabele om de waarde van de analoge input (de ADC) in op te slaan
+extern char buffer[5];                                 // Dit is iets voor de itoa functie, hiermee krijg ik het in een terminal zodat ik waardes kan aflezen in normale taal
+extern uint8_t i;                                    // Variabele voor de for() loop
+extern int tempC;
+extern int lightL;
+extern double vout;
 
 void adcInit(void);                            // Functie om de ADC te intialiseren/configuren
 uint16_t readAdc(uint8_t channel);             // Functie om de waarde van de analoge pin uit te lezen
