@@ -1,5 +1,6 @@
 from views.view import view
 from tkinter import *
+import tkinter as tk
 import math
 # Hackathon taught me to write ugly code, im so sorry
 class settings(view):
@@ -37,9 +38,9 @@ class settings(view):
         # Status radio buttons
         self.statusValue = IntVar(self.tabs[0])
         self.statuslabel = Label(self.tabs[0], text="Rolluik besturing")
-        self.statusradio = [Radiobutton(self.tabs[0], text="Automated", variable=self.statusValue, value=0),
-                            Radiobutton(self.tabs[0], text="Open", variable=self.statusValue, value=1),
-                            Radiobutton(self.tabs[0], text="Closed", variable=self.statusValue, value=2)]
+        self.statusradio = [Radiobutton(self.tabs[0], text="Automatisch", variable=self.statusValue, value=0),
+                            Radiobutton(self.tabs[0], text="Opgerold", variable=self.statusValue, value=1),
+                            Radiobutton(self.tabs[0], text="Uitgerold", variable=self.statusValue, value=2)]
         # Height settings
         self.minHeight = Entry(self.tabs[0])
         self.maxHeight = Entry(self.tabs[0])
@@ -53,7 +54,7 @@ class settings(view):
 
         self.optionmenuvalue = StringVar(self.tabs[0])
         self.optionmenuvalue.set("all") # default value
-        self.optionmenu = OptionMenu(self.tabs[0], self.optionmenuvalue, "all", "one", "two", "three")
+        self.optionmenu = OptionMenu(self.tabs[0], self.optionmenuvalue, "all")
 
 
         #
@@ -102,13 +103,18 @@ class settings(view):
 
     def drawframe(self):
         # Go check for controlunits
-
         #
 
         xoffset = math.floor(self.root.interface.width * 0.25)
         width = math.ceil(self.root.interface.width * 0.75)
         heightTen = math.floor((self.root.interface.height-50) * 0.10)
-
+        self.optionmenu['menu'].delete(0, 'end')
+        cus = self.root.controlunits
+        choices = ['all']
+        for serial in cus:
+            choices.append(cus[serial]['friendlyid'])
+        for choice in choices:
+            self.optionmenu['menu'].add_command(label=choice, command=tk._setit(self.optionmenuvalue, choice))
         # Arduino bordje menu
         self.optionmenu.place(x=(width*0.5), y=20, width=100)
         self.optionlabel.place(x=(width*0.5)-100, y=25, width=100)
@@ -183,8 +189,76 @@ class settings(view):
                 'graph_grid_growth_x':self.ggraph_fill_growth_value.get()
             }
         else:                       # Tab 1
-            pass
+            friendlyid = self.optionmenuvalue.get()
+            if friendlyid == 'all':
+                for serial in self.root.controlunits:
+                    self.extrasend(serial)
+            else:
+                for serial in self.root.controlunits:
+                    if self.root.controlunits[serial]['friendlyid'] == friendlyid:
+                        self.extrasend(serial)
+
     def reset(self):
-        pass
+        friendlyid = self.optionmenuvalue.get()
+        if friendlyid == 'all':
+            for serial in self.root.controlunits:
+                controlunit = self.root.controlunits[serial]['controlunit']
+                controlunit.communication.pollcommunication('00000110')
+                controlunit.communication.ser.read(1)
+        else:
+            for serial in self.root.controlunits:
+                if self.root.controlunits[serial]['friendlyid'] == friendlyid:
+                    controlunit = self.root.controlunits[serial]['controlunit']
+                    controlunit.communication.pollcommunication('00000110')
+                    controlunit.communication.ser.read(1)
+
+
+    def extrasend(self, serial):
+        controlunit = self.root.controlunits[serial]['controlunit']
+        try:
+            v = int(self.minHeight.get())
+            v = 65000 if v > 65000 else v
+            v = 0 if v < 0 else v
+            controlunit.communication.pollcommunication('00000100', v)
+        except:
+            print("Cant convert minheight to int")
+        try:
+            v = int(self.maxHeight.get())
+            v = 65000 if v > 65000 else v
+            v = 0 if v < 0 else v
+            controlunit.communication.pollcommunication('00000101', v)
+        except:
+            print("Cant convert maxheight to int")
+        try:
+            v = int(self.minTemp.get())
+            v = 255 if v > 255 else v
+            v = 0 if v < 0 else v
+            controlunit.communication.pollcommunication('00000001', v)
+        except:
+            print("Cant convert mintemp to int")
+        try:
+            v = int(self.maxTemp.get())
+            v = 255 if v > 255 else v
+            v = 0 if v < 0 else v
+            controlunit.communication.pollcommunication('00000010', v)
+        except:
+            print("Cant convert maxtemp to int")
+        try:
+            v = int(self.lux.get())
+            v = 1023 if v > 1023 else v
+            v = 0 if v < 0 else v
+            controlunit.communication.pollcommunication('00000011', v)
+        except:
+            print("Cant convert lux to int")
+
+        v = int(self.statusValue.get())
+        v = 2 if v > 2 else v
+        v = 0 if v < 0 else v
+        controlunit.communication.pollcommunication('00000000', v)
+
+        #print("I made a goof")
+
+        # IM SO SORRY
+        controlunit.communication.ser.read(6)
 if __name__ == '__main__':
     quit("Not main")

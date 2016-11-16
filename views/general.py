@@ -7,23 +7,11 @@ class general:
     def __init__(self,root):
         self.root = root
         self.frame = Frame(width=500, height=500, bg='#fff')
-        cvlist = [
-            Canvas(self.frame, background='#222'),
-            Canvas(self.frame, background='#444'),
-            Canvas(self.frame, background='#666'),
-            Canvas(self.frame, background='#888'),
-            Canvas(self.frame, background='#aaa'),
-            Canvas(self.frame, background='#CCC'),
-            Canvas(self.frame, background='#eee')
-        ]
+
         self.canvasList = []
-        for x in cvlist:
-            self.canvasList.append({
-                'graph':graph(x),
-                'canvas':x
-            })
+        self.canvasOptions = []
         self.drawframe()
-        pass
+
     def drawframe(self):
         xoffset = math.floor(self.root.interface.width * 0.25)
         width = math.ceil(self.root.interface.width * 0.75)
@@ -50,7 +38,9 @@ class general:
 
         curx = 0
         cury = 0
+        counter = -1
         for canv in self.canvasList:
+            counter += 1
             if self.root.settings['graph_growth_x']:  # Grow X
                 if curx == x:
                     curx = 0
@@ -59,16 +49,19 @@ class general:
                     if curx == 0 and cury == 0: # First one
                         canv['canvas'].config(width=graphodd, height=graphheight)
                         canv['canvas'].place(x=0,y=0)
+                        self.canvasOptions[counter]['frame'].place(x=5+xoffset,y=5)
                         canv['graph'].setdimensions(graphodd, graphheight)
                         curx += limit - len(self.canvasList) + 1
                     else:   # Rest
                         canv['canvas'].config(width=graphwidth, height=graphheight)
                         canv['canvas'].place(x=graphwidth*curx,y=graphheight*cury)
+                        self.canvasOptions[counter]['frame'].place(x=5+xoffset+graphwidth*curx,y=5+graphheight*cury)
                         canv['graph'].setdimensions(graphwidth, graphheight)
                         curx += 1
                 else:
                     canv['canvas'].config(width=graphwidth, height=graphheight)
                     canv['canvas'].place(x=graphwidth*curx,y=graphheight*cury)
+                    self.canvasOptions[counter]['frame'].place(x=5+xoffset+graphwidth*curx,y=5+graphheight*cury)
                     canv['graph'].setdimensions(graphwidth, graphheight)
                     curx += 1
 
@@ -80,16 +73,19 @@ class general:
                     if curx == 0 and cury == 0: # First one
                         canv['canvas'].config(width=graphwidth, height=graphodd)
                         canv['canvas'].place(x=0,y=0)
+                        self.canvasOptions[counter]['frame'].place(x=5+xoffset,y=5)
                         canv['graph'].setdimensions(graphwidth, graphodd)
                         cury += limit - len(self.canvasList) + 1
                     else:   # Rest
                         canv['canvas'].config(width=graphwidth, height=graphheight)
                         canv['canvas'].place(x=graphwidth*curx,y=graphheight*cury)
+                        self.canvasOptions[counter]['frame'].place(x=5+xoffset+graphwidth*curx,y=5+graphheight*cury)
                         canv['graph'].setdimensions(graphwidth, graphheight)
                         cury += 1
                 else:
                     canv['canvas'].config(width=graphwidth, height=graphheight)
                     canv['canvas'].place(x=graphwidth*curx,y=graphheight*cury)
+                    self.canvasOptions[counter]['frame'].place(x=5+xoffset+graphwidth*curx,y=5+graphheight*cury)
                     canv['graph'].setdimensions(graphwidth, graphheight)
                     cury += 1
 
@@ -98,11 +94,36 @@ class general:
         self.frame.config(width=self.root.interface.width-xoffset, height=self.root.interface.height)
         self.frame.place(x=xoffset,y=0)
         self.frame.tkraise()
+        for opt in self.canvasOptions:
+            opt['frame'].tkraise()
         # End-generic
     def send(self):
         pass
     def reset(self):
         pass
-    def drawlines(self):
-        # Send shit to graph model
-        pass
+    def addarduino(self, controlunit):
+        canvas = Canvas(self.frame, bg='#ccc')
+        g = graph(canvas,controlunit, self)
+        self.canvasList.append({
+            'graph': g,
+            'canvas':canvas
+        })
+        f = Frame(width=135, height=40)
+        d = {
+            'frame': f,
+            'graph': g,
+            'v_temp': Label(f),
+            'v_light': Label(f),
+            'c_temp': BooleanVar(),
+            'c_light': BooleanVar()
+        }
+        d['c_temp'].set(True)
+        d['c_light'].set(True)
+        d['b_light'] = Checkbutton(d['frame'], text="Light", variable=d['c_light'], onvalue=True, offvalue=False)
+        d['b_temp'] = Checkbutton(d['frame'], text="Temperature", variable=d['c_temp'], onvalue=True, offvalue=False)
+        d['b_light'].place(x=-3,y=-3)
+        d['b_temp'].place(x=-3,y=17)
+        d['v_light'].place(x=90,y=0)
+        d['v_temp'].place(x=90,y=20)
+        self.canvasOptions.append(d)
+        self.drawframe()
